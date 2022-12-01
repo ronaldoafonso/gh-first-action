@@ -1,0 +1,37 @@
+---
+name: Produce Some Output
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      file: ${{steps.build.outputs.file}} 
+    steps:
+      - name: Build project
+        id: build
+        run: |
+          mkdir -p output/dir
+          echo 'This is file.' > output/dir/file.txt
+          echo 'file=file.txt' >> $GITHUB_OUTPUT
+      - name: Upload build
+        uses: actions/upload-artifact@v3
+        with:
+          name: build
+          path: output/
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy project
+        uses: actions/download-artifact@v3
+        with:
+          name: build
+      - name: Show build content
+        run: ls -lR
+      - name: Deploy project
+        run: cat dir/"${{needs.build.outputs.file}}"
+...
