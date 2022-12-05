@@ -1,0 +1,36 @@
+---
+name: Included workflow
+
+on:
+  workflow_call:
+    inputs:
+      name:
+        description: The name of someone
+        required: false
+        type: string
+        default: Ronaldo
+    secrets:
+      age:
+        description: The age of someone
+        required: true
+    outputs:
+      result:
+        description: Appended name
+        value: ${{ jobs.include1.outputs.result }}
+
+jobs:
+  include1:
+    runs-on: ubuntu-latest
+    outputs:
+      result: ${{ steps.result.outputs.result }}
+    steps:
+      - name: Included step 1
+        run: |
+          echo "included step 1 name ${{ inputs.name }}."
+      - name: Included step 2
+        run: |
+          echo "include1 step 2 age ${{ secrets.age }}."
+      - name: Set result
+        id: result
+        run: echo "result=${{ inputs.name }} Zacarias" >> $GITHUB_OUTPUT
+...
