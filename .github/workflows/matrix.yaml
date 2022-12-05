@@ -1,0 +1,20 @@
+---
+name: Matrix
+
+on:
+  workflow_dispatch:
+
+jobs:
+  job1:
+    strategy:
+      matrix:
+        name: [ronaldo, afonso]
+        age: [0, 10, 20]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Show name
+        run: |
+          echo 'My name is: ${{ matrix.name }}.'
+      - name: Show age
+        run: echo '${{ matrix.name }} is ${{ matrix.age }} years old.'
+...
